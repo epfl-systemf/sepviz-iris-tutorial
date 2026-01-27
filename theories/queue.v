@@ -1,3 +1,7 @@
+(*|
+.. coq:: none
+|*)
+
 From iris.heap_lang Require Import lang proofmode notation.
 
 Section queues.
@@ -31,6 +35,26 @@ Definition is_empty : val :=
     let: "b" := Snd "q" in
     "f" = "b".
 
+Definition transfer : val :=
+  λ: "p1" "p2",
+    if: ~(is_empty "p2") then
+      (* b1 := p1.tail *)
+      let: "b1" := Snd !"p1" in
+      (* f2 := p2.head *)
+      let: "f2" := Fst !"p2" in
+      (* d := b1.head *)
+      let: "d" := Fst !"b1" in
+      (* b1.head := f2.head; b1.tail := f2.tail *)
+      "b1" <- (Fst !"f2", Snd !"f2");;
+      (* p1.tail := p2.tail *)
+      "p1" <- (Fst !"p1", Snd !"p2");;
+      (* f2.head := d *)
+      "f2" <- ("d", NONEV);;
+      (* p2.tail := f2 *)
+      "p2" <- (Fst !"p2", "f2")
+    else
+      #().
+
 Lemma is_empty_spec (p: loc) (L: list val) :
   {{{ isQueue p L }}}
     is_empty #p
@@ -51,31 +75,7 @@ Proof.
     simpl.
     Admitted.
 
-Definition transfer : val :=
-  λ: "p1" "p2",
-    if: ~(is_empty "p2") then
-      (* b1 := p1.tail *)
-      let: "b1" := Snd !"p1" in
-
-      (* f2 := p2.head *)
-      let: "f2" := Fst !"p2" in
-
-      (* d := b1.head *)
-      let: "d" := Fst !"b1" in
-
-      (* b1.head := f2.head; b1.tail := f2.tail *)
-      "b1" <- (Fst !"f2", Snd !"f2");;
-
-      (* p1.tail := p2.tail *)
-      "p1" <- (Fst !"p1", Snd !"p2");;
-
-      (* f2.head := d *)
-      "f2" <- ("d", NONEV);;
-
-      (* p2.tail := f2 *)
-      "p2" <- (Fst !"p2", "f2")
-    else
-      #().
+(*||*)
 
 Lemma transfer_spec (L1 L2 : list val) (p1 p2 : loc) :
   {{{ isQueue p1 L1 ∗ isQueue p2 L2 }}}
@@ -104,3 +104,7 @@ Proof.
 Qed.
 
 End queues.
+
+(*|
+.. coq:: none
+|*)

@@ -28,11 +28,12 @@
         {
           devShells.default = pkgs.mkShell {
             packages = (
-              with pkgs;
-              [
+              (with pkgs.coqPackages_8_20; [
                 coq
-                coqPackages.iris
-              ]
+                iris
+                serapi
+              ])
+              ++ (with pkgs; [ python312Packages.alectryon ])
             );
           };
         }

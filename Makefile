@@ -27,7 +27,19 @@ Makefile.coq: _CoqProject
 	coq_makefile -f _CoqProject -o Makefile.coq
 
 exercises: $(EXERCISES)
-.PHONY: exercises
+.PHONY: exercises sepviz
+
+SEPVIZ_OUT_DIR := _sepviz_build
+SEPVIZ_MODULES := queue
+SEPVIZ_HTMLS   := $(addprefix $(SEPVIZ_OUT_DIR)/,$(addsuffix .html,$(SEPVIZ_MODULES)))
+
+$(SEPVIZ_OUT_DIR):
+	mkdir -p $@
+
+$(SEPVIZ_OUT_DIR)/%.html: theories/%.v
+	alectryon $(COQFLAGS) --output $@ $<
+
+sepviz: $(SEPVIZ_HTMLS)
 
 $(EXERCISES): exercises/%.v: theories/%.v gen-exercises.awk
 	@if test -f $@ && ! git diff --exit-code $@ >/dev/null; then \
