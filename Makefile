@@ -31,13 +31,17 @@ exercises: $(EXERCISES)
 
 SEPVIZ_OUT_DIR := _sepviz_build
 SEPVIZ_MODULES := queue
-SEPVIZ_HTMLS   := $(addprefix $(SEPVIZ_OUT_DIR)/,$(addsuffix .html,$(SEPVIZ_MODULES)))
+# SEPVIZ_HTMLS   := $(addprefix $(SEPVIZ_OUT_DIR)/,$(addsuffix .html,$(SEPVIZ_MODULES)))
+SEPVIZ_HTMLS   := $(SEPVIZ_OUT_DIR)/Iris-Queue.html
 
 $(SEPVIZ_OUT_DIR):
 	mkdir -p $@
 
-$(SEPVIZ_OUT_DIR)/%.html: theories/%.v
+$(SEPVIZ_OUT_DIR)/Iris-Queue.html: theories/queue.v
 	alectryon $(COQFLAGS) --output $@ $<
+
+# $(SEPVIZ_OUT_DIR)/%.html: theories/%.v
+# 	alectryon $(COQFLAGS) --output $@ $<
 
 sepviz: $(SEPVIZ_HTMLS)
 
