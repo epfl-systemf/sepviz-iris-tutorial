@@ -75,6 +75,27 @@ Proof.
     simpl.
     Admitted.
 
+Notation "p '~>' 'isQueue' L" := (isQueue p L) (at level 33).
+Notation "p '~>' 'isListSeg' L b" :=
+  (isListSeg p L b)
+    (at level 33,
+      L constr at level 0,
+      b constr at level 0).
+Notation "p '~>' 'Pair' x y" :=
+  (pointsto p (DfracOwn (pos_to_Qp 1)) (PairV x y))
+    (at level 33, x constr at level 8, y constr at level 8).
+
+From iris.proofmode Require Import coq_tactics environments.
+
+Notation "'PRE' '{*'  P '*}' 'CODE' e 'POST' 'RET' pat ; '{*'  Q '*}'" :=
+  (∀ Φ, P -∗ ▷ (Q -∗ Φ pat%V) -∗ WP e {{ Φ }})
+  (format "'PRE'  '{*'  P  '*}' '//' 'CODE'  e '//' 'POST'  'RET' pat ;  '{*'  Q  '*}'")
+    : stdpp_scope.
+
+Notation "[* Γ H : {* P *} *]" := (Esnoc Γ (INamed H) P%I)
+  (at level 1, P at level 200,
+  left associativity, format "[*  Γ H  :  '{*'  P  '*}'  *] '//'", only printing) : proof_scope.
+
 (*||*)
 
 Lemma transfer_spec (L1 L2 : list val) (p1 p2 : loc) :
