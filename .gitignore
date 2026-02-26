@@ -27,3 +27,6 @@ _opam
 html/*
 .vscode/
 .direnv/
+
+# sepviz
+_sepviz_build
