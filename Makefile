@@ -32,12 +32,15 @@ exercises: $(EXERCISES)
 ALECTRYON_FLAGS := --webpage-style windowed
 SEPVIZ_OUT_DIR := _sepviz_build
 SEPVIZ_MODULES := queue
-SEPVIZ_HTMLS   := $(SEPVIZ_OUT_DIR)/Iris-Queue.html
+SEPVIZ_HTMLS   := $(SEPVIZ_OUT_DIR)/Iris-Queue.html $(SEPVIZ_OUT_DIR)/Iris-List.html
 
 $(SEPVIZ_OUT_DIR):
 	mkdir -p $@
 
 $(SEPVIZ_OUT_DIR)/Iris-Queue.html: theories/queue.v
+	alectryon $(ALECTRYON_FLAGS) --output $@ $<
+
+$(SEPVIZ_OUT_DIR)/Iris-List.html: theories/linked_lists.v
 	alectryon $(ALECTRYON_FLAGS) --output $@ $<
 
 sepviz: $(SEPVIZ_HTMLS)

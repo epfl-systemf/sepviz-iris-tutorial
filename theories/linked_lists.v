@@ -1,4 +1,38 @@
+(*|
+.. coq:: none
+|*)
+
 From iris.heap_lang Require Import lang proofmode notation.
+
+(* ################################################################# *)
+(** sep-viz notations *)
+From iris.proofmode Require Import coq_tactics environments.
+
+Notation "'PRE' '{*'  P '*}' 'CODE' e 'POST' 'RET' pat ; '{*'  Q '*}'" :=
+  (∀ Φ, P -∗ ▷ (Q -∗ Φ pat%V) -∗ WP e {{ Φ }})
+  (format "'PRE'  '{*'  P  '*}' '//' 'CODE'  e '//' 'POST'  'RET' pat ;  '{*'  Q  '*}'")
+    : stdpp_scope.
+
+Notation "[* Γ H : {* P *} *]" := (Esnoc Γ (INamed H) P%I)
+  (at level 1, P at level 200,
+  left associativity, format "[*  Γ H  :  '{*'  P  '*}'  *] '//'", only printing) : proof_scope.
+
+Notation "Γ '--------------------------------------' □ Δ '--------------------------------------' ∗ '{*'  Q  '*}'" :=
+  (envs_entails (Envs Γ Δ _) Q%I)
+  (* The level of Δ is picked to silence warnings about incompatible prefixes. See https://github.com/coq/coq/issues/19631. *)
+  (at level 1, Δ at level 200, Q at level 200, left associativity,
+  format "'[' Γ '--------------------------------------' □ '//' Δ '--------------------------------------' ∗ '//' '{*'  Q  '*}' ']'", only printing) :
+  stdpp_scope.
+
+Notation "Δ '--------------------------------------' ∗ '{*'  Q  '*}'" :=
+  (envs_entails (Envs Enil Δ _) Q%I)
+  (at level 1, Q at level 200, left associativity,
+  format "'[' Δ '--------------------------------------' ∗ '//' '{*'  Q  '*}' ']'", only printing) : stdpp_scope.
+
+Notation "'--------------------------------------' ∗ '{*'  Q  '*}'" := (envs_entails (Envs Enil Enil _) Q%I)
+  (at level 1, Q at level 200, format "'[' '--------------------------------------' ∗ '//' '{*'  Q  '*}' ']'", only printing) : stdpp_scope.
+
+Notation "'⌜'  φ  '⌝'" := (bi_pure φ%type%stdpp) : bi_scope.
 
 (* ################################################################# *)
 (** * Case Study: Linked Lists *)
@@ -253,6 +287,15 @@ Definition fold_right : val :=
   closed under universal quantification. Hence, in the proof, the
   assumption for [f] will move into the persistent context.
 *)
+
+
+Notation "p '~>' 'isList' L" := (isList p L) (at level 33).
+Notation "p '~>' 'Pair' x y" :=
+  (pointsto p (DfracOwn (pos_to_Qp 1)) (PairV x y))
+    (at level 33, x constr at level 8, y constr at level 8).
+
+(*||*)
+
 Lemma fold_right_spec P I (f a l : val) xs :
   {{{
     isList l xs ∗ ([∗ list] x ∈ xs, P x) ∗ I [] a ∗
@@ -302,7 +345,7 @@ Definition sum_list : val :=
     let: "f" := (λ: "x" "y", "x" + "y") in
     fold_right "f" #0 "l".
 
-Lemma sum_list_spec l xs :
+Lemma sum_list_spec (l: val) (xs: list Z) :
   {{{isList l ((λ x : Z, #x) <$> xs)}}}
     sum_list l
   {{{RET #(foldr Z.add 0 xs); isList l ((λ x : Z, #x) <$> xs)}}}.
@@ -337,3 +380,7 @@ Proof.
 Qed.
 
 End linked_lists.
+
+(*|
+.. coq:: none
+|*)
