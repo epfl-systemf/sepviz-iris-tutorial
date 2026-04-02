@@ -34,6 +34,10 @@ Notation "'--------------------------------------' ∗ '{*'  Q  '*}'" := (envs_e
 
 Notation "'⌜'  φ  '⌝'" := (bi_pure φ%type%stdpp) : bi_scope.
 
+Disable Notation "[∗" (all, only printing).
+Disable Notation "[^" (all, only printing).
+Notation "'BigOp' ★ ( x ∈ l ) , P" := (big_opL bi_sep (fun _ x => P) l) (at level 100) : bi_scope.
+
 (* ################################################################# *)
 (** * Case Study: Linked Lists *)
 
