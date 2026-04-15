@@ -3,6 +3,7 @@
 |*)
 
 From iris.heap_lang Require Import lang proofmode notation.
+Require Import solutions.sepviz_notations.
 
 Section queues.
 Context `{!heapGS Σ}.
@@ -75,26 +76,20 @@ Proof.
     simpl.
     Admitted.
 
-Notation "p '~>' 'isQueue' L" := (isQueue p L) (at level 33).
-Notation "p '~>' 'isListSeg' L b" :=
-  (isListSeg p L b)
-    (at level 33,
-      L constr at level 0,
-      b constr at level 0).
-Notation "p '~>' 'Pair' x y" :=
-  (pointsto p (DfracOwn (pos_to_Qp 1)) (PairV x y))
-    (at level 33, x constr at level 8, y constr at level 8).
+(** ** File-specific sepviz notations *)
 
-From iris.proofmode Require Import coq_tactics environments.
+Notation "'PointsTo' '┆' p '┆' 'isQueue' '┆' x" :=
+  (isQueue p x)
+    (in custom sep at level 200,
+     p constr at level 200,
+     x constr at level 200).
 
-Notation "'PRE' '{*'  P '*}' 'CODE' e 'POST' 'RET' pat ; '{*'  Q '*}'" :=
-  (∀ Φ, P -∗ ▷ (Q -∗ Φ pat%V) -∗ WP e {{ Φ }})
-  (format "'PRE'  '{*'  P  '*}' '//' 'CODE'  e '//' 'POST'  'RET' pat ;  '{*'  Q  '*}'")
-    : stdpp_scope.
-
-Notation "[* Γ H : {* P *} *]" := (Esnoc Γ (INamed H) P%I)
-  (at level 1, P at level 200,
-  left associativity, format "[*  Γ H  :  '{*'  P  '*}'  *] '//'", only printing) : proof_scope.
+Notation "'PointsTo' '┆' p '┆' 'isListSeg' '┆' x '┆' y" :=
+  (isListSeg p x y)
+    (in custom sep at level 200,
+     p constr at level 200,
+     x constr at level 200,
+     y constr at level 200).
 
 (*||*)
 
