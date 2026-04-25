@@ -4,6 +4,9 @@
 
 From iris.heap_lang Require Import lang proofmode notation.
 
+Require Import solutions.sepviz_notations.
+Open Scope sepviz_scope.
+
 (* ################################################################# *)
 (** sep-viz notations *)
 From iris.proofmode Require Import coq_tactics environments.
@@ -57,6 +60,12 @@ Fixpoint isList (l : val) (xs : list val) : iProp Σ :=
   | [] => ⌜l = NONEV⌝
   | x :: xs => ∃ (hd : loc) l', ⌜l = SOMEV (#hd)⌝ ∗ hd ↦ (x, l') ∗ isList l' xs
   end.
+
+Notation "'PointsTo' ┆ p ┆ ⟦ 'isList' ┆ x ⟧" :=
+  (isList p x)
+    (in custom sep at level 200,
+     p constr, x constr at level 200): sepviz_scope.
+
 (**
   Here, [NONEV] and [SOMEV v] are the value equivalents of [NONE] and
   [SOME e].

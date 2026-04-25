@@ -42,7 +42,7 @@ ALECTRYON_FLAGS := \
   --long-line-threshold 0
 
 SEPVIZ_OUTDIR  := _sepviz_build
-SEPVIZ_MODULES := queue
+SEPVIZ_MODULES := queue linked_lists
 SEPVIZ_HTMLS   := $(patsubst %,$(SEPVIZ_OUTDIR)/Iris-%.html,$(SEPVIZ_MODULES))
 
 $(SEPVIZ_OUTDIR):
