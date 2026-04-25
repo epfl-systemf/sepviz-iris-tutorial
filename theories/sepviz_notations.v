@@ -45,9 +45,9 @@ Notation "⟬* 'PRE' @ P *⟭ e 'RET' pat ; ⟬* 'POST' @ Q *⟭" :=
   (∀ Φ, P -∗ ▷ (Q -∗ Φ pat%V) -∗ WP e {{ Φ }})
     (format "'⟬*'  'PRE'  '@'  P  '*⟭' '//' e '//' 'RET'  pat ; '//' '⟬*'  'POST'  '@'  Q  '*⟭'"): sepviz_scope.
 
-Notation "Γ ⟬* H : P *⟭" := (environments.Esnoc Γ (INamed H) P%I)
+Notation "Γ ⟬* 'PRE' @ H : P *⟭" := (environments.Esnoc Γ (INamed H) P%I)
   (at level 1, P at level 200,
-  left associativity, format "Γ ⟬*  H  :  P  *⟭ '//'", only printing) : sepviz_scope.
+  left associativity, format "Γ ⟬*  PRE  @  H  :  P  *⟭ '//'", only printing) : sepviz_scope.
 
 Section septest.
   Open Scope sepviz_scope.
