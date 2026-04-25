@@ -16,7 +16,7 @@ Fixpoint isListSeg (p: loc) (L : list val) (q: loc): iProp Σ :=
   | x :: L1 => ∃ (p1: loc), p ↦ (x, #p1) ∗ isListSeg p1 L1 q
   end.
 
-Notation "'PointsTo' '┆' p '┆' '⟦' 'isListSeg' '┆' x '┆' y '⟧'" :=
+Notation "'PointsTo' ┆ p ┆ ⟦ 'isListSeg' ┆ x ┆ y ⟧" :=
   (isListSeg p x y)
     (in custom sep at level 200,
      p constr, x constr, y constr at level 200): sepviz_scope.
@@ -31,12 +31,26 @@ Proof. iIntros. simpl. iFrame. Qed.
 
 Lemma isListSeg_concat : forall p1 p3 L1 L2,
   isListSeg p1 (L1++L2) p3 ⊣⊢ ∃ p2, isListSeg p1 L1 p2 ∗ isListSeg p2 L2 p3.
-Proof. Admitted.
+Proof.
+  intros p1 p3 L1. revert p1.
+  induction L1 as [| x L1' IH]; intros p1 L2.
+  - simpl. iSplit.
+    + iIntros "H". iExists p1. iFrame. done.
+    + iIntros "(%p2 & -> & H)". done.
+  - simpl. iSplit.
+    + iIntros "(%p1' & Hp & H)".
+      iDestruct (bi.equiv_entails_1_1 _ _ (IH p1' L2) with "H") as "(%p2 & H1 & H2)".
+      iExists p2. iFrame.
+    + iIntros "(%p2 & (%p1' & Hp & H1) & H2)".
+      iExists p1'. iFrame.
+      iApply (bi.equiv_entails_1_2 _ _ (IH p1' L2)).
+      iExists p2. iFrame.
+Qed.
 
 Definition isQueue (p: loc) (L: list val): iProp Σ :=
   ∃ (f b: loc) (d: val), p ↦ (#f, #b) ∗ isListSeg f L b ∗ b ↦ (d, NONEV).
 
-Notation "'PointsTo' '┆' p '┆' '⟦' 'isQueue' '┆' x '⟧'" :=
+Notation "'PointsTo' ┆ p ┆ ⟦ 'isQueue' ┆ x ⟧" :=
   (isQueue p x)
     (in custom sep at level 200,
      p constr, x constr at level 200): sepviz_scope.
@@ -85,8 +99,12 @@ Proof.
     simpl. iDestruct "Hseg" as %->. rewrite bool_decide_true; auto.
     iApply "HΦ". unfold isQueue. iExists b, b, d. simpl. iFrame. done.
   - (* L = x :: L1 *)
-    simpl.
-    Admitted.
+    iDestruct (isListSeg_cons_inv with "Hseg") as (p1) "[Hf HL]".
+    iDestruct (pointsto_ne with "Hf Hb") as %Hne.
+    rewrite bool_decide_false; last easy.
+    rewrite bool_decide_false; last congruence.
+    iApply "HΦ". unfold isQueue. iExists f, b, d. iFrame.
+Qed.
 
 (*||*)
 
