@@ -4,6 +4,8 @@
 -arg -async-proofs-cache -arg force
 
 theories/sepviz_notations.v
+theories/queue.v
+
 theories/basics.v
 theories/pure.v
 theories/lang.v

@@ -3,7 +3,9 @@
 |*)
 
 From iris.heap_lang Require Import lang proofmode notation.
+
 Require Import solutions.sepviz_notations.
+Open Scope sepviz_scope.
 
 Section queues.
 Context `{!heapGS Σ}.
@@ -13,6 +15,11 @@ Fixpoint isListSeg (p: loc) (L : list val) (q: loc): iProp Σ :=
   | [] => ⌜p = q⌝
   | x :: L1 => ∃ (p1: loc), p ↦ (x, #p1) ∗ isListSeg p1 L1 q
   end.
+
+Notation "'PointsTo' '┆' p '┆' '⟦' 'isListSeg' '┆' x '┆' y '⟧'" :=
+  (isListSeg p x y)
+    (in custom sep at level 200,
+     p constr, x constr, y constr at level 200): sepviz_scope.
 
 Lemma isListSeg_cons_inv (p : loc) (x : val) (L : list val) (q : loc) :
   isListSeg p (x::L) q ⊢ ∃ (p1: loc), p ↦ (x, #p1) ∗ isListSeg p1 L q.
@@ -28,6 +35,11 @@ Proof. Admitted.
 
 Definition isQueue (p: loc) (L: list val): iProp Σ :=
   ∃ (f b: loc) (d: val), p ↦ (#f, #b) ∗ isListSeg f L b ∗ b ↦ (d, NONEV).
+
+Notation "'PointsTo' '┆' p '┆' '⟦' 'isQueue' '┆' x '⟧'" :=
+  (isQueue p x)
+    (in custom sep at level 200,
+     p constr, x constr at level 200): sepviz_scope.
 
 Definition is_empty : val :=
   λ: "p",
@@ -75,21 +87,6 @@ Proof.
   - (* L = x :: L1 *)
     simpl.
     Admitted.
-
-(** ** File-specific sepviz notations *)
-
-Notation "'PointsTo' '┆' p '┆' 'isQueue' '┆' x" :=
-  (isQueue p x)
-    (in custom sep at level 200,
-     p constr at level 200,
-     x constr at level 200).
-
-Notation "'PointsTo' '┆' p '┆' 'isListSeg' '┆' x '┆' y" :=
-  (isListSeg p x y)
-    (in custom sep at level 200,
-     p constr at level 200,
-     x constr at level 200,
-     y constr at level 200).
 
 (*||*)
 
