@@ -301,12 +301,6 @@ Definition fold_right : val :=
   assumption for [f] will move into the persistent context.
 *)
 
-
-Notation "p '~>' 'isList' L" := (isList p L) (at level 33).
-Notation "p '~>' 'Pair' x y" :=
-  (pointsto p (DfracOwn (pos_to_Qp 1)) (PairV x y))
-    (at level 33, x constr at level 8, y constr at level 8).
-
 (*||*)
 
 Lemma fold_right_spec P I (f a l : val) xs :
@@ -343,6 +337,11 @@ Proof.
     iExists hd, l'.
     by iFrame.
 Qed.
+
+(*|
+.. coq:: none
+|*)
+
 (* END SOLUTION BEGIN TEMPLATE
   (* exercise *)
 Admitted.
