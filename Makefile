@@ -10,15 +10,15 @@ export COQDOCFLAGS
 
 COQ_FLAGS := -Q theories solutions -Q exercises exercises
 
-all: Makefile.coq
+build: Makefile.coq
 	+make -f Makefile.coq all
 	+make sepviz
-.PHONY: all
+.PHONY: build
 
-clean: Makefile.coq
-	+make -f Makefile.coq clean
-	rm -f Makefile.coq
-	+make clean-sepviz
+clean::
+	if [ -e Makefile.coq ]; then $(MAKE) -f Makefile.coq cleanall; fi
+	$(RM) $(wildcard Makefile.coq Makefile.coq.conf)
+	$(MAKE) clean-sepviz
 .PHONY: clean
 
 html: Makefile.coq _CoqProject
@@ -29,6 +29,7 @@ html: Makefile.coq _CoqProject
 
 Makefile.coq: _CoqProject
 	coq_makefile -f _CoqProject -o Makefile.coq
+-include Makefile.coq
 
 exercises: $(EXERCISES)
 .PHONY: exercises sepviz
@@ -48,10 +49,10 @@ SEPVIZ_HTMLS   := $(patsubst %,$(SEPVIZ_OUTDIR)/Iris-%.html,$(SEPVIZ_MODULES))
 $(SEPVIZ_OUTDIR):
 	mkdir -p $@
 
-$(SEPVIZ_OUTDIR)/Iris-%.html: theories/%.v
+$(SEPVIZ_OUTDIR)/Iris-%.html: theories/%.v theories/sepviz_notations.vo | $(SEPVIZ_OUTDIR)
 	alectryon $(ALECTRYON_FLAGS) --output $@ $<
 
-sepviz: $(SEPVIZ_HTMLS)
+sepviz: Makefile.coq $(SEPVIZ_HTMLS)
 .PHONY: sepviz
 
 clean-sepviz:
