@@ -8,40 +8,6 @@ Require Import solutions.sepviz_notations.
 Open Scope sepviz_scope.
 
 (* ################################################################# *)
-(** sep-viz notations *)
-From iris.proofmode Require Import coq_tactics environments.
-
-Notation "'PRE' '{*'  P '*}' 'CODE' e 'POST' 'RET' pat ; '{*'  Q '*}'" :=
-  (∀ Φ, P -∗ ▷ (Q -∗ Φ pat%V) -∗ WP e {{ Φ }})
-  (format "'PRE'  '{*'  P  '*}' '//' 'CODE'  e '//' 'POST'  'RET' pat ;  '{*'  Q  '*}'")
-    : stdpp_scope.
-
-Notation "[* Γ H : {* P *} *]" := (Esnoc Γ (INamed H) P%I)
-  (at level 1, P at level 200,
-  left associativity, format "[*  Γ H  :  '{*'  P  '*}'  *] '//'", only printing) : proof_scope.
-
-Notation "Γ '--------------------------------------' □ Δ '--------------------------------------' ∗ '{*'  Q  '*}'" :=
-  (envs_entails (Envs Γ Δ _) Q%I)
-  (* The level of Δ is picked to silence warnings about incompatible prefixes. See https://github.com/coq/coq/issues/19631. *)
-  (at level 1, Δ at level 200, Q at level 200, left associativity,
-  format "'[' Γ '--------------------------------------' □ '//' Δ '--------------------------------------' ∗ '//' '{*'  Q  '*}' ']'", only printing) :
-  stdpp_scope.
-
-Notation "Δ '--------------------------------------' ∗ '{*'  Q  '*}'" :=
-  (envs_entails (Envs Enil Δ _) Q%I)
-  (at level 1, Q at level 200, left associativity,
-  format "'[' Δ '--------------------------------------' ∗ '//' '{*'  Q  '*}' ']'", only printing) : stdpp_scope.
-
-Notation "'--------------------------------------' ∗ '{*'  Q  '*}'" := (envs_entails (Envs Enil Enil _) Q%I)
-  (at level 1, Q at level 200, format "'[' '--------------------------------------' ∗ '//' '{*'  Q  '*}' ']'", only printing) : stdpp_scope.
-
-Notation "'⌜'  φ  '⌝'" := (bi_pure φ%type%stdpp) : bi_scope.
-
-Disable Notation "[∗" (all, only printing).
-Disable Notation "[^" (all, only printing).
-Notation "'BigOp' ★ ( x ∈ l ) , P" := (big_opL bi_sep (fun _ x => P) l) (at level 100) : bi_scope.
-
-(* ################################################################# *)
 (** * Case Study: Linked Lists *)
 
 Section linked_lists.
@@ -392,7 +358,3 @@ Proof.
 Qed.
 
 End linked_lists.
-
-(*|
-.. coq:: none
-|*)
