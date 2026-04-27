@@ -1,3 +1,8 @@
+(**
+  This file is derived from the `linked_list.v` of the iris tutorial (MIT
+  license). Changes: added sepviz notations, removed the [sum_list_spec] proof.
+*)
+
 From iris.heap_lang Require Import lang proofmode notation.
 
 (* ################################################################# *)

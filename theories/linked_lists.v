@@ -313,48 +313,4 @@ Qed.
 Admitted.
 END TEMPLATE *)
 
-(**
-  We can now sum over a list simply by folding an addition function over
-  it.
-*)
-
-Definition sum_list : val :=
-  λ: "l",
-    let: "f" := (λ: "x" "y", "x" + "y") in
-    fold_right "f" #0 "l".
-
-Lemma sum_list_spec (l: val) (xs: list Z) :
-  {{{isList l ((λ x : Z, #x) <$> xs)}}}
-    sum_list l
-  {{{RET #(foldr Z.add 0 xs); isList l ((λ x : Z, #x) <$> xs)}}}.
-Proof.
-  iIntros (Φ) "Hl HΦ".
-  wp_rec; wp_pures.
-  wp_apply (fold_right_spec
-    (λ x, ∃ i : Z, ⌜x = #i⌝)%I
-    (λ xs y, ∃ ys, ⌜xs = (λ x : Z, #x) <$> ys⌝ ∗ ⌜y = #(foldr Z.add 0 ys)⌝)%I
-    with "[Hl]"
-  ).
-  - iFrame.
-    repeat iSplit.
-    + iPureIntro; simpl.
-      intros k v Hk.
-      rewrite list_lookup_fmap in Hk.
-      destruct (xs !! k) as [x|]; last done.
-      injection Hk as <-.
-      by exists x.
-    + by iExists [].
-    + clear.
-      iIntros (x a' ys Φ) "!> [[%i ->] (%xs & -> & ->)] HΦ".
-      wp_pures.
-      iModIntro.
-      iApply "HΦ".
-      by iExists (i :: xs).
-  - iIntros "%_ (Hl & %ys & %H & ->)".
-    assert (Hinj:Inj eq eq (λ x : Z, #x)) by congruence.
-    apply (inj _) in H.
-    subst ys.
-    by iApply "HΦ".
-Qed.
-
 End linked_lists.
