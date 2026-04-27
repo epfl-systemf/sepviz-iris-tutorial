@@ -63,15 +63,15 @@ Notation "'Forall' ┆ x ┆ H" :=
         x name,
         H constr at level 200): sepviz_scope.
 
-Notation "'BigOp' ┆ ∗ ┆ ⟦ '$IterKX' ┆ k ┆ x ┆ l ⟧ ┆ P" :=
+Notation "'BigOp' ┆ ∗ ┆ k ↦ x ∈ l ┆ P" :=
   (big_opL bi_sep (λ k x, P%I) l)
     (in custom sep at level 200,
      k constr, x constr, l constr, P constr at level 200): sepviz_scope.
-Notation "'BigOp' ┆ ∗ ┆ ⟦ '$IterX' ┆ x ┆ l ⟧ ┆ P" :=
+Notation "'BigOp' ┆ ∗ ┆ x ∈ l ┆ P" :=
   (big_opL bi_sep (λ _ x, P%I) l)
     (in custom sep at level 200,
      x constr, l constr, P constr at level 200): sepviz_scope.
-Notation "'BigOp' ┆ ∗ ┆ ⟦ '$Iter' ⟧ ┆ Ps " :=
+Notation "'BigOp' ┆ ∗ ┆ ' ' ┆ Ps " :=
   (big_opL bi_sep (λ _ x, x) Ps%I)
     (in custom sep at level 200,
      Ps constr at level 200): sepviz_scope.
